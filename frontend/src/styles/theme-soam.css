@@ -1,0 +1,186 @@
+/* ===== Thème SOAM : vert, jaune, blanc (première version) =====
+   Vert  : identité, boutons, éléments actifs
+   Jaune : mise en évidence (survol, sélection, marque)
+   Blanc : fonds du mode clair
+   Pas de bordure entre la barre supérieure, le tiroir et le contenu.
+   Chargée en dernier : ses règles remplacent les couleurs précédentes. */
+
+:root {
+  --vert-soam: #15803d;
+  --vert-clair: #22c55e;
+  --vert-fonce: #14532d;
+  --jaune-soam: #facc15;
+  --jaune-fonce: #ca8a04;
+}
+
+/* ----- Mode clair : fond blanc, touches vertes et jaunes ----- */
+:root,
+:root[data-theme='clair'] {
+  color-scheme: light;
+  --fond: #f6f9f3;
+  --fond-carte: #ffffff;
+  --fond-side: #eef7e8;
+  --bordure: #d6e8cc;
+  --texte: #14291c;
+  --texte-doux: #4f6b57;
+  --accent: #15803d;
+  --accent-texte: #ffffff;
+  --survol: #e3f2d9;
+  --actif: #fef3c7;
+}
+
+/* ----- Mode sombre : fond vert très foncé, touches jaunes ----- */
+:root[data-theme='sombre'] {
+  color-scheme: dark;
+  --fond: #0b1a10;
+  --fond-carte: #142a1b;
+  --fond-side: #10231a;
+  --bordure: #25442e;
+  --texte: #f4fbef;
+  --texte-doux: #a9c7ab;
+  --accent: #22c55e;
+  --accent-texte: #0b1a10;
+  --survol: #1c3a25;
+  --actif: #3d3a12;
+}
+
+/* ----- Barre supérieure : aucune bordure, titre vert ----- */
+.barre {
+  border: none;
+  box-shadow: none;
+}
+.barre-titre {
+  color: var(--vert-soam);
+}
+:root[data-theme='sombre'] .barre-titre {
+  color: var(--jaune-soam);
+}
+
+/* ----- Tiroir : aucune bordure, marque en jaune ----- */
+.tiroir {
+  border: none;
+  box-shadow: none;
+}
+.tiroir .marque {
+  color: var(--jaune-soam);
+}
+:root[data-theme='clair'] .tiroir .marque {
+  color: var(--vert-soam);
+}
+
+/* Élément actif : barre jaune à gauche */
+.nav-item.actif {
+  box-shadow: inset 4px 0 0 var(--jaune-soam);
+}
+
+/* Avatar */
+.avatar {
+  background: var(--vert-soam);
+  color: #ffffff;
+}
+:root[data-theme='sombre'] .avatar {
+  background: var(--vert-clair);
+  color: #0b1a10;
+}
+
+/* ----- Boutons principaux : vert, survol jaune ----- */
+.btn-primary,
+.bouton-principal {
+  background: var(--vert-soam);
+  color: #ffffff;
+  border: none;
+  transition: background 0.15s ease;
+}
+.btn-primary:hover,
+.bouton-principal:hover {
+  background: var(--jaune-soam);
+  color: #14291c;
+}
+:root[data-theme='sombre'] .btn-primary,
+:root[data-theme='sombre'] .bouton-principal {
+  background: var(--vert-clair);
+  color: #0b1a10;
+}
+:root[data-theme='sombre'] .btn-primary:hover,
+:root[data-theme='sombre'] .bouton-principal:hover {
+  background: var(--jaune-soam);
+  color: #14291c;
+}
+
+/* ----- Tableaux : en-tête vert clair, lignes survolées ----- */
+.table th {
+  background: var(--fond-side);
+  color: var(--vert-soam);
+}
+:root[data-theme='sombre'] .table th {
+  color: var(--jaune-soam);
+}
+.table tbody tr:hover {
+  background: var(--survol);
+}
+
+/* ----- Cartes d'indicateurs : liseré vert en haut ----- */
+.kpi-grid .card {
+  border-top: 3px solid var(--vert-soam);
+}
+.kpi-value {
+  color: var(--vert-soam);
+}
+:root[data-theme='sombre'] .kpi-value {
+  color: var(--jaune-soam);
+}
+
+/* ----- Badges de statut ----- */
+.badge.attente { background: #fef3c7; color: #854d0e; }
+.badge.cours { background: #dbeafe; color: #1e40af; }
+.badge.livree { background: #dcfce7; color: #166534; }
+.badge.refusee { background: #fee2e2; color: #991b1b; }
+:root[data-theme='sombre'] .badge.attente { background: #3d3a12; color: var(--jaune-soam); }
+:root[data-theme='sombre'] .badge.livree { background: #14532d; color: #bbf7d0; }
+
+/* ----- Graphiques : barres vertes, jaune en mode sombre ----- */
+svg rect[fill='#22c55e'] {
+  fill: var(--vert-soam);
+}
+:root[data-theme='sombre'] svg rect[fill='#22c55e'] {
+  fill: var(--jaune-soam);
+}
+
+/* ----- Connexion : dégradé vert et jaune ----- */
+.login-fond {
+  background: linear-gradient(135deg, var(--vert-fonce) 0%, var(--vert-soam) 55%, var(--jaune-soam) 130%);
+}
+.login-visuel {
+  background: linear-gradient(160deg, var(--vert-soam), var(--vert-fonce));
+}
+.login-visuel h2 {
+  color: var(--jaune-soam);
+}
+.login-form h1 {
+  color: var(--vert-soam);
+}
+:root[data-theme='sombre'] .login-form h1 {
+  color: var(--jaune-soam);
+}
+.champ input:focus {
+  border-color: var(--jaune-soam);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.3);
+}
+
+/* ----- Pastilles de compteur : jaunes en mode sombre ----- */
+:root[data-theme='sombre'] .pastille {
+  color: #0b1a10;
+  background: var(--jaune-soam);
+}
+
+/* ----- Liens et sélection ----- */
+a {
+  color: var(--vert-soam);
+}
+:root[data-theme='sombre'] a {
+  color: var(--jaune-soam);
+}
+::selection {
+  background: var(--jaune-soam);
+  color: #14291c;
+}

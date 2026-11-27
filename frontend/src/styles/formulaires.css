@@ -1,0 +1,218 @@
+/* ===== Formulaires SOAM : style commun =====
+   Chargé après theme-soam.css : utilise les couleurs du thème. */
+
+.form-carte {
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure);
+  border-top: 4px solid var(--vert-soam, #15803d);
+  border-radius: 16px;
+  padding: 26px 28px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.06);
+  max-width: 880px;
+}
+
+.form-titre {
+  margin: 0 0 4px;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--texte);
+}
+
+.form-sous-titre {
+  margin: 0 0 22px;
+  font-size: 13px;
+  color: var(--texte-doux);
+}
+
+.form-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px 22px;
+}
+
+.form-champ {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.form-champ.pleine {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--texte);
+}
+.form-label .obligatoire {
+  color: #ef4444;
+  margin-left: 3px;
+}
+
+/* Conteneur d'un champ : permet de placer une icône et un bouton à l'intérieur */
+.form-entree {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.form-entree > svg {
+  position: absolute;
+  left: 13px;
+  color: var(--texte-doux);
+  pointer-events: none;
+}
+.form-entree.avec-icone .form-input,
+.form-entree.avec-icone .form-select {
+  padding-left: 40px;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--bordure);
+  background: var(--fond-side);
+  color: var(--texte);
+  font: inherit;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.form-input.avec-oeil {
+  padding-right: 44px;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--jaune-vif, #eab308);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.35);
+}
+
+.form-input[readonly],
+.form-input:disabled,
+.form-select:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  background: var(--fond);
+}
+
+.form-input.invalide,
+.form-select.invalide {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.form-oeil {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--texte-doux);
+  display: inline-flex;
+  padding: 4px;
+}
+
+.form-aide {
+  font-size: 12px;
+  color: var(--texte-doux);
+}
+.form-erreur-champ {
+  font-size: 12px;
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.form-bandeau-erreur {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+  font-size: 14px;
+}
+:root[data-theme='sombre'] .form-bandeau-erreur {
+  color: #fca5a5;
+}
+
+.form-note {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--jaune-pale, #fef9c3);
+  color: #713f12;
+  font-size: 13px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+:root[data-theme='sombre'] .form-note {
+  background: #4a4210;
+  color: #fef08a;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--bordure);
+}
+
+.form-btn-principal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border: none;
+  border-radius: 12px;
+  background: var(--vert-soam, #15803d);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.form-btn-principal:hover:not(:disabled) {
+  background: var(--jaune-soam, #facc15);
+  color: #1c1917;
+}
+.form-btn-principal:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.form-btn-secondaire {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: 12px;
+  background: none;
+  border: 1px solid var(--bordure);
+  color: var(--texte-doux);
+  font-size: 14px;
+  cursor: pointer;
+}
+.form-btn-secondaire:hover {
+  border-color: var(--jaune-soam, #facc15);
+  color: var(--texte);
+}
+
+@media (max-width: 640px) {
+  .form-carte {
+    padding: 20px;
+  }
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+  .form-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}
