@@ -13,16 +13,22 @@ export type Commande = {
   emailResponsable: string;
   nbLignes: number;
   quantiteTotale: number;
+<<<<<<< HEAD
   // Montants en Ariary
   montantEstime: number;
   montantConfirme: number;
   montantTotal: number;
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 };
 
 export type LigneCommande = {
   idLigneCommande: string;
   nomProduit: string;
+<<<<<<< HEAD
   prixUnitaire: number;
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   nomMembre: string;
   prenomMembre: string;
   districtMembre: string;
@@ -32,7 +38,10 @@ export type LigneCommande = {
   quantiteDemandee: number;
   quantiteConfirmee: number | null;
   quantiteRestanteRecolte: number;
+<<<<<<< HEAD
   montantLigne: number;
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 };
 
 export type DetailCommande = {
@@ -50,6 +59,7 @@ export type LigneConfirmee = {
   quantiteConfirmee: number;
 };
 
+<<<<<<< HEAD
 function idUser(): string {
   return lireSession()?.idUser ?? '';
 }
@@ -57,13 +67,21 @@ function idUser(): string {
 // Le président ne reçoit que les commandes de sa coopérative
 export async function getCommandes(): Promise<Commande[]> {
   const { data } = await api.get<Commande[]>('/commandes', { params: { idUser: idUser() } });
+=======
+export async function getCommandes(): Promise<Commande[]> {
+  const { data } = await api.get<Commande[]>('/commandes');
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   return data;
 }
 
 export async function getDetailCommande(idCommande: string): Promise<DetailCommande> {
+<<<<<<< HEAD
   const { data } = await api.get<DetailCommande>(`/commandes/${idCommande}`, {
     params: { idUser: idUser() },
   });
+=======
+  const { data } = await api.get<DetailCommande>(`/commandes/${idCommande}`);
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   return data;
 }
 
@@ -80,6 +98,10 @@ export async function creerCommande(
   return data;
 }
 
+<<<<<<< HEAD
+=======
+// Acceptation par le président : quantités confirmées par ligne
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 export async function accepterCommande(
   idCommande: string,
   idUser: string,
@@ -88,6 +110,7 @@ export async function accepterCommande(
   await api.post(`/commandes/${idCommande}/accepter`, { idUser, lignes });
 }
 
+<<<<<<< HEAD
 export async function refuserCommande(idCommande: string, idUser: string): Promise<void> {
   await api.post(`/commandes/${idCommande}/refuser`, { idUser });
 }
@@ -99,4 +122,9 @@ export async function changerStatutPaiement(
   statut: 'PAYE' | 'NON_PAYE'
 ): Promise<void> {
   await api.post(`/commandes/${idCommande}/paiement`, { idUser, statutPaiement: statut });
+=======
+// Refus par le président : aucun stock n'est modifié
+export async function refuserCommande(idCommande: string, idUser: string): Promise<void> {
+  await api.post(`/commandes/${idCommande}/refuser`, { idUser });
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 }

@@ -19,8 +19,12 @@ export default function ListeProduits() {
   const navigate = useNavigate();
   const [produits, setProduits] = useState<Produit[]>([]);
   const [enEdition, setEnEdition] = useState<string | null>(null);
+<<<<<<< HEAD
   const [nomEdition, setNomEdition] = useState('');
   const [prixEdition, setPrixEdition] = useState('');
+=======
+  const [valeurEdition, setValeurEdition] = useState('');
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   const [erreur, setErreur] = useState('');
   const [message, setMessage] = useState('');
   const [chargement, setChargement] = useState(true);
@@ -31,7 +35,11 @@ export default function ListeProduits() {
     setChargement(true);
     getProduits()
       .then((liste) => setProduits(liste))
+<<<<<<< HEAD
       .catch((err) => setErreur(messageDe(err, 'Impossible de charger les produits')))
+=======
+      .catch(() => setErreur('Impossible de charger les produits'))
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
       .finally(() => setChargement(false));
   }, [version]);
 
@@ -50,12 +58,17 @@ export default function ListeProduits() {
   function commencerEdition(p: Produit) {
     effacerMessages();
     setEnEdition(p.idProduit);
+<<<<<<< HEAD
     setNomEdition(p.nomProduit);
     setPrixEdition(String(p.prixUnitaire));
+=======
+    setValeurEdition(p.nomProduit);
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   }
 
   function annulerEdition() {
     setEnEdition(null);
+<<<<<<< HEAD
     setNomEdition('');
     setPrixEdition('');
   }
@@ -80,6 +93,19 @@ export default function ListeProduits() {
     effacerMessages();
     try {
       await modifierProduit(idProduit, { nomProduit: nomEdition.trim(), prixUnitaire: prix });
+=======
+    setValeurEdition('');
+  }
+
+  async function enregistrerEdition(idProduit: string) {
+    if (!valeurEdition.trim()) {
+      setErreur('Le nom ne peut pas être vide');
+      return;
+    }
+    effacerMessages();
+    try {
+      await modifierProduit(idProduit, valeurEdition.trim());
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
       annulerEdition();
       setMessage('Produit modifié');
       setVersion((v) => v + 1);
@@ -116,15 +142,26 @@ export default function ListeProduits() {
     fontSize: 13,
   };
 
+<<<<<<< HEAD
   const champ = { padding: 6, borderRadius: 8, border: '1px solid var(--bordure)', background: 'var(--fond-side)', color: 'var(--texte)' };
 
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   return (
     <div className="dash">
       <Sidebar />
       <main className="dash-main">
         <header className="dash-header">
           <h1>Produits</h1>
+<<<<<<< HEAD
           <button type="button" className="btn-primary" onClick={() => navigate('/produits/ajouter')}>
+=======
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => navigate('/produits/ajouter')}
+          >
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
             + Ajouter un produit
           </button>
         </header>
@@ -142,7 +179,10 @@ export default function ListeProduits() {
                 <tr>
                   <th>Code</th>
                   <th>Nom</th>
+<<<<<<< HEAD
                   <th>Prix (Ar/kg)</th>
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -152,21 +192,32 @@ export default function ListeProduits() {
                   return (
                     <tr key={p.idProduit}>
                       <td>{p.idProduit}</td>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
                       <td>
                         {enCours ? (
                           <input
                             aria-label={`Nouveau nom de ${p.nomProduit}`}
                             autoFocus
+<<<<<<< HEAD
                             value={nomEdition}
                             onChange={(e) => setNomEdition(e.target.value)}
                             onKeyDown={(e) => toucheEdition(e, p.idProduit)}
                             style={champ}
+=======
+                            value={valeurEdition}
+                            onChange={(e) => setValeurEdition(e.target.value)}
+                            onKeyDown={(e) => toucheEdition(e, p.idProduit)}
+                            style={{ padding: 6 }}
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
                           />
                         ) : (
                           p.nomProduit
                         )}
                       </td>
+<<<<<<< HEAD
 
                       <td>
                         {enCours ? (
@@ -185,13 +236,19 @@ export default function ListeProduits() {
                         )}
                       </td>
 
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
                       <td style={{ display: 'flex', gap: 8 }}>
                         {enCours ? (
                           <>
                             <button
                               type="button"
                               onClick={() => enregistrerEdition(p.idProduit)}
+<<<<<<< HEAD
                               disabled={!nomEdition.trim() || prixValide() === null}
+=======
+                              disabled={!valeurEdition.trim()}
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
                               style={boutonLien}
                             >
                               Enregistrer

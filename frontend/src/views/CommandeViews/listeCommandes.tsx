@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
@@ -8,6 +9,13 @@ import { lireSession } from '../../utils/session';
 import { useMaj } from '../../hooks/useTempsReel';
 import { contient, dansPeriode } from '../../utils/filtres';
 import { formaterAr } from '../../utils/format';
+=======
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Sidebar from '../../components/Sidebar';
+import { getCommandes } from '../../services/commande.service';
+import type { Commande } from '../../services/commande.service';
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 import '../../styles/dashboard.css';
 
 const LIBELLES: Record<Commande['statutCommande'], string> = {
@@ -24,19 +32,30 @@ const CLASSES: Record<Commande['statutCommande'], string> = {
   REFUSEE: 'refusee',
 };
 
+<<<<<<< HEAD
 // "2026-11-18" devient "18/11/2026"
 function formaterDate(iso: string | null): string {
   if (!iso) return '—';
   const [annee, mois, jour] = iso.slice(0, 10).split('-');
+=======
+function formaterDate(iso: string | null): string {
+  if (!iso) return '—';
+  const [annee, mois, jour] = iso.split('-');
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   return `${jour}/${mois}/${annee}`;
 }
 
 function formaterKg(n: number): string {
+<<<<<<< HEAD
   return `${Number(n).toLocaleString('fr-FR')} kg`;
+=======
+  return `${n.toLocaleString('fr-FR')} kg`;
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 }
 
 export default function ListeCommandes() {
   const navigate = useNavigate();
+<<<<<<< HEAD
   const estPresident = lireSession()?.role === 'PRESIDENT';
 
   const [commandes, setCommandes] = useState<Commande[]>([]);
@@ -52,10 +71,23 @@ export default function ListeCommandes() {
         setCommandes(liste);
         setErreur('');
       })
+=======
+  const utilisateur: { role: string } | null = JSON.parse(localStorage.getItem('utilisateur') ?? 'null');
+  const estPresident = utilisateur?.role === 'PRESIDENT';
+
+  const [commandes, setCommandes] = useState<Commande[]>([]);
+  const [erreur, setErreur] = useState('');
+  const [chargement, setChargement] = useState(true);
+
+  useEffect(() => {
+    getCommandes()
+      .then(setCommandes)
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
       .catch(() => setErreur('Impossible de charger les commandes'))
       .finally(() => setChargement(false));
   }, []);
 
+<<<<<<< HEAD
   useEffect(() => {
     charger();
   }, [charger]);
@@ -84,6 +116,8 @@ export default function ListeCommandes() {
     [affichees]
   );
 
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   const boutonLien = {
     background: 'none',
     border: '1px solid var(--bordure)',
@@ -99,6 +133,7 @@ export default function ListeCommandes() {
       <Sidebar />
       <main className="dash-main">
         <header className="dash-header">
+<<<<<<< HEAD
           <div>
             <h1 style={{ margin: 0 }}>{estPresident ? 'Commandes reçues' : 'Commandes'}</h1>
             {!estPresident && (
@@ -176,6 +211,56 @@ export default function ListeCommandes() {
                 <strong style={{ color: 'var(--texte)' }}>{formaterAr(totalAffiche)}</strong>
               </div>
             </>
+=======
+          <h1>{estPresident ? 'Commandes reçues' : 'Commandes'}</h1>
+          {!estPresident && (
+            <button type="button" className="btn-primary" onClick={() => navigate('/commandes/ajouter')}>
+              + Nouvelle commande
+            </button>
+          )}
+        </header>
+
+        <section className="card">
+          {erreur && <p style={{ color: '#ef4444' }}>{erreur}</p>}
+          {chargement && <p>Chargement...</p>}
+          {!chargement && !erreur && commandes.length === 0 && <p>Aucune commande enregistrée.</p>}
+
+          {!chargement && commandes.length > 0 && (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  {!estPresident && <th>Coopérative</th>}
+                  <th>Lignes</th>
+                  <th>Quantité totale</th>
+                  <th>Statut</th>
+                  <th>Paiement</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {commandes.map((c) => (
+                  <tr key={c.idCommande}>
+                    <td>{formaterDate(c.dateCommande)}</td>
+                    {!estPresident && <td>{c.nomCoop}</td>}
+                    <td>{c.nbLignes}</td>
+                    <td>{formaterKg(c.quantiteTotale)}</td>
+                    <td><span className={`badge ${CLASSES[c.statutCommande]}`}>{LIBELLES[c.statutCommande]}</span></td>
+                    <td>{c.statutPaiement === 'PAYE' ? 'Payé' : 'Non payé'}</td>
+                    <td>
+                      <button
+                        type="button"
+                        style={boutonLien}
+                        onClick={() => navigate(`/commandes/${c.idCommande}`)}
+                      >
+                        Détail
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
           )}
         </section>
       </main>

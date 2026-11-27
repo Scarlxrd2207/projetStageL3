@@ -1,22 +1,32 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+<<<<<<< HEAD
 import { Wheat, Building2, ShoppingCart, Package, MessageSquare, Mail, Lock, Eye, EyeOff, LogIn, AlertCircle } from 'lucide-react';
 import { login } from '../../services/auth.service';
 import { enregistrerSession } from '../../utils/session';
 import '../../styles/tiroir.css';
+=======
+import { login } from '../../services/auth.service';
+<main style={{ maxWidth: 360, margin: '60px auto', padding: 24, background: 'white', borderRadius: 8 }}></main>
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 
 export default function Connexion() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [motDePasse, setMotDePasse] = useState('');
+<<<<<<< HEAD
   const [voir, setVoir] = useState(false);
   const [erreur, setErreur] = useState('');
   const [envoi, setEnvoi] = useState(false);
+=======
+  const [erreur, setErreur] = useState('');
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setErreur('');
+<<<<<<< HEAD
     setEnvoi(true);
     try {
       const u = await login(email.trim(), motDePasse);
@@ -32,10 +42,22 @@ export default function Connexion() {
       setErreur(err?.response?.data?.message ?? 'Serveur inaccessible, vérifiez que le backend est lancé');
     } finally {
       setEnvoi(false);
+=======
+
+    try {
+      const utilisateur = await login(email, motDePasse);
+      localStorage.setItem('utilisateur', JSON.stringify(utilisateur));
+
+      if (utilisateur.role === 'RESPONSABLE') navigate('/dashboard/responsable');
+      else navigate('/dashboard/president');
+    } catch (err: any) {
+      setErreur(err.response?.data?.message ?? 'Serveur inaccessible');
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     }
   }
 
   return (
+<<<<<<< HEAD
     <div className="login-fond">
       <div className="login-carte">
         <section className="login-visuel">
@@ -91,5 +113,36 @@ export default function Connexion() {
         </section>
       </div>
     </div>
+=======
+    <main style={{ maxWidth: 360, margin: '80px auto', fontFamily: 'Arial' }}>
+      <h1>Connexion SOAM</h1>
+
+      <form onSubmit={handleSubmit}>
+        <label>Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          style={{ width: '100%', marginBottom: 12 }}
+        />
+
+        <label>Mot de passe</label>
+        <input
+          type="password"
+          value={motDePasse}
+          onChange={(e) => setMotDePasse(e.target.value)}
+          required
+          style={{ width: '100%', marginBottom: 12 }}
+        />
+
+        <button type="submit" style={{ width: '100%', padding: 8 }}>
+          Se connecter
+        </button>
+      </form>
+
+      {erreur && <p style={{ color: 'red' }}>{erreur}</p>}
+    </main>
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   );
 }

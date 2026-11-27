@@ -1,4 +1,5 @@
 import { Router } from 'express';
+<<<<<<< HEAD
 import {
   postCreerPresident,
   getMoi,
@@ -31,3 +32,12 @@ export default router;
 
 
 
+=======
+import { postCreerPresident } from '../controllers/utilisateur.controller';
+
+const router = Router();
+
+router.post('/presidents', postCreerPresident);
+
+export default router;
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28

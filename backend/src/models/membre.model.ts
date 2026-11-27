@@ -8,5 +8,8 @@ export interface Membre {
   fokotanyMembre: string;
   actifMembre: 'Oui' | 'Non';
   idCoop: string;
+<<<<<<< HEAD
   nomCoop?: string | null;
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 }

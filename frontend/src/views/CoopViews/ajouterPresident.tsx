@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+<<<<<<< HEAD
 import type { FormEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { User, Calendar, MapPin, Mail, Lock, Eye, EyeOff, UserPlus, X } from 'lucide-react';
@@ -32,11 +33,30 @@ export default function AjouterPresident() {
   const [envoi, setEnvoi] = useState(false);
 
   const aujourdhui = new Date().toISOString().slice(0, 10);
+=======
+import { useNavigate, useParams } from 'react-router-dom';
+import Sidebar from '../../components/Sidebar';
+import FormulairePresident from '../../components/FormulairePresident';
+import { getCooperative } from '../../services/cooperative.service';
+import type { Cooperative } from '../../services/cooperative.service';
+import { creerPresident } from '../../services/utilisateur.service';
+import { lireSession } from '../../utils/session';
+import '../../styles/dashboard.css';
+
+export default function AjouterPresident() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const session = lireSession();
+
+  const [coop, setCoop] = useState<Cooperative | null>(null);
+  const [erreurChargement, setErreurChargement] = useState('');
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 
   useEffect(() => {
     if (!id) return;
     getCooperative(id)
       .then(setCoop)
+<<<<<<< HEAD
       .catch(() => setBandeau('Coopérative introuvable'));
   }, [id]);
 
@@ -73,6 +93,19 @@ export default function AjouterPresident() {
       setBandeau(err?.response?.data?.message ?? 'Création impossible');
     } finally {
       setEnvoi(false);
+=======
+      .catch(() => setErreurChargement('Coopérative introuvable'));
+  }, [id]);
+
+  async function enregistrer(d: { email: string; motDePasse: string }): Promise<string | null> {
+    if (!session || !id) return 'Session incomplète, reconnectez-vous';
+    try {
+      await creerPresident(session.idUser, { ...d, idCoop: id });
+      navigate('/cooperatives');
+      return null;
+    } catch (err: any) {
+      return err?.response?.data?.message ?? 'Création impossible';
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     }
   }
 
@@ -81,6 +114,7 @@ export default function AjouterPresident() {
       <Sidebar />
       <main className="dash-main">
         <header className="dash-header">
+<<<<<<< HEAD
           <div>
             <h1 style={{ margin: 0 }}>Créer le compte du président</h1>
             {coop && (
@@ -216,6 +250,21 @@ export default function AjouterPresident() {
             </button>
           </div>
         </form>
+=======
+          <h1>Compte du président</h1>
+        </header>
+        <section className="card">
+          {erreurChargement && <p style={{ color: '#ef4444' }}>{erreurChargement}</p>}
+          {!erreurChargement && !coop && <p>Chargement...</p>}
+          {coop && (
+            <FormulairePresident
+              nomCoop={`${coop.nomCoop} (${coop.idCoop})`}
+              onSubmit={enregistrer}
+              onAnnuler={() => navigate('/cooperatives')}
+            />
+          )}
+        </section>
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
       </main>
     </div>
   );

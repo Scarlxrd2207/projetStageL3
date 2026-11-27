@@ -11,12 +11,18 @@
   },
   "dependencies": {
     "axios": "^1.21.1",
+<<<<<<< HEAD
     "lucide-react": "^1.78.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.5",
     "recharts": "^3.11.1",
     "socket.io-client": "^4.8.4"
+=======
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.5"
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

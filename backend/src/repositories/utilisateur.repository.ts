@@ -7,6 +7,7 @@ export type UtilisateurSession = {
   actifUtilisateur: 'Oui' | 'Non';
 };
 
+<<<<<<< HEAD
 export type CompteComplet = {
   idUser: string;
   email: string;
@@ -62,11 +63,20 @@ export async function trouverParEmail(email: string): Promise<CompteComplet | nu
        FROM utilisateur u
        LEFT JOIN cooperative c ON c."idCoop" = u."idCoop"
       WHERE u.email = $1`,
+=======
+// Utilisé par la connexion (auth.service)
+export async function trouverParEmail(email: string) {
+  const r = await pool.query(
+    `SELECT "idUser", email, "motDePasse", role, "actifUtilisateur", "idCoop"
+       FROM utilisateur
+      WHERE email = $1`,
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     [email]
   );
   return r.rows[0] ?? null;
 }
 
+<<<<<<< HEAD
 export async function trouverCompte(idUser: string): Promise<CompteComplet | null> {
   const r = await pool.query(
     `SELECT ${COLONNES_COMPTE}
@@ -78,6 +88,9 @@ export async function trouverCompte(idUser: string): Promise<CompteComplet | nul
   return r.rows[0] ?? null;
 }
 
+=======
+// Relit le demandeur dans la base : son rôle ne vient jamais du navigateur
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 export async function trouverUtilisateurSession(idUser: string): Promise<UtilisateurSession | null> {
   const r = await pool.query(
     `SELECT "idUser", role, "idCoop", "actifUtilisateur"
@@ -88,6 +101,7 @@ export async function trouverUtilisateurSession(idUser: string): Promise<Utilisa
   return r.rows[0] ?? null;
 }
 
+<<<<<<< HEAD
 export async function emailExiste(email: string, idExclu?: string): Promise<boolean> {
   const r = await pool.query(
     `SELECT 1 FROM utilisateur
@@ -97,6 +111,14 @@ export async function emailExiste(email: string, idExclu?: string): Promise<bool
   return (r.rowCount ?? 0) > 0;
 }
 
+=======
+export async function emailExiste(email: string): Promise<boolean> {
+  const r = await pool.query(`SELECT 1 FROM utilisateur WHERE email = $1`, [email]);
+  return (r.rowCount ?? 0) > 0;
+}
+
+// Vrai si la coopérative a déjà un président
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 export async function presidentDeCoop(idCoop: string): Promise<boolean> {
   const r = await pool.query(
     `SELECT 1 FROM utilisateur WHERE role = 'PRESIDENT' AND "idCoop" = $1`,
@@ -105,8 +127,18 @@ export async function presidentDeCoop(idCoop: string): Promise<boolean> {
   return (r.rowCount ?? 0) > 0;
 }
 
+<<<<<<< HEAD
 // Création du président avec un identifiant PRE-001... sous verrou
 export async function creerPresident(p: DonneesCreation): Promise<{ idUser: string; email: string; idCoop: string }> {
+=======
+// Création du président dans une transaction avec verrou : deux créations simultanées
+// ne peuvent pas obtenir le même numéro (PRE-001, PRE-002...)
+export async function creerPresident(params: {
+  email: string;
+  motDePasseHache: string;
+  idCoop: string;
+}): Promise<{ idUser: string; email: string; idCoop: string }> {
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -120,12 +152,19 @@ export async function creerPresident(p: DonneesCreation): Promise<{ idUser: stri
     const idUser = `PRE-${String(suivant.rows[0].n).padStart(3, '0')}`;
 
     const r = await client.query(
+<<<<<<< HEAD
       `INSERT INTO utilisateur
          ("idUser", email, "motDePasse", role, "actifUtilisateur", "idCoop",
           nom, prenom, adresse, "dateNaissance")
        VALUES ($1, $2, $3, 'PRESIDENT', 'Oui', $4, $5, $6, $7, $8::date)
        RETURNING "idUser", email, "idCoop"`,
       [idUser, p.email, p.motDePasseHache, p.idCoop, p.nom, p.prenom, p.adresse, p.dateNaissance]
+=======
+      `INSERT INTO utilisateur ("idUser", email, "motDePasse", role, "actifUtilisateur", "idCoop")
+       VALUES ($1, $2, $3, 'PRESIDENT', 'Oui', $4)
+       RETURNING "idUser", email, "idCoop"`,
+      [idUser, params.email, params.motDePasseHache, params.idCoop]
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     );
 
     await client.query('COMMIT');
@@ -136,6 +175,7 @@ export async function creerPresident(p: DonneesCreation): Promise<{ idUser: stri
   } finally {
     client.release();
   }
+<<<<<<< HEAD
 }
 
 export async function modifierIdentite(
@@ -184,4 +224,6 @@ export async function changerActif(idUser: string, actif: 'Oui' | 'Non'): Promis
     `UPDATE utilisateur SET "actifUtilisateur" = $2 WHERE "idUser" = $1 AND role = 'PRESIDENT'`,
     [idUser, actif]
   );
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 }

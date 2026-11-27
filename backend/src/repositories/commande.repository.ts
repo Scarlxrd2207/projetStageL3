@@ -5,8 +5,12 @@ export type ResultatTx = { ok: true } | { ok: false; status: number; message: st
 
 export type LigneConfirmee = { idLigneCommande: string; quantiteConfirmee: number };
 
+<<<<<<< HEAD
 // Montant estimé (quantités demandées) et confirmé (quantités acceptées) par commande.
 // montantTotal suit le statut : estimé en attente, confirmé ensuite, 0 si refusée.
+=======
+// Liste des commandes avec le nom de la coopérative et l'e-mail du responsable
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 const SELECT_LISTE = `
   SELECT co."idCommande",
          co."dateCommande"::text AS "dateCommande",
@@ -23,6 +27,7 @@ const SELECT_LISTE = `
            WHERE lc."idCommande" = co."idCommande") AS "nbLignes",
          (SELECT COALESCE(SUM(lc."quantiteDemandee"), 0)::float8
             FROM ligne_commande lc
+<<<<<<< HEAD
            WHERE lc."idCommande" = co."idCommande") AS "quantiteTotale",
          m."montantEstime",
          m."montantConfirme",
@@ -42,6 +47,12 @@ const SELECT_LISTE = `
         JOIN produit p ON p."idProduit" = r."idProduit"
        WHERE lc."idCommande" = co."idCommande"
     ) m ON TRUE
+=======
+           WHERE lc."idCommande" = co."idCommande") AS "quantiteTotale"
+    FROM commande co
+    JOIN cooperative c ON c."idCoop" = co."idCoop"
+    JOIN utilisateur u ON u."idUser" = co."idUser"
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 `;
 
 export async function listerCommandes(filtres: {
@@ -63,12 +74,19 @@ export async function trouverCommande(idCommande: string): Promise<unknown | nul
   return r.rows[0] ?? null;
 }
 
+<<<<<<< HEAD
 // Lignes avec prix unitaire et montant de ligne, cohérents avec le statut de la commande
+=======
+// Lignes d'une commande, avec le produit et le membre producteur
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 export async function lignesCommande(idCommande: string): Promise<unknown[]> {
   const r = await pool.query(
     `SELECT lc."idLigneCommande",
             p."nomProduit",
+<<<<<<< HEAD
             p."prixUnitaire"::float8 AS "prixUnitaire",
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
             m."nomMembre",
             m."prenomMembre",
             m."districtMembre",
@@ -77,6 +95,7 @@ export async function lignesCommande(idCommande: string): Promise<unknown[]> {
             r."dateRecolte"::text AS "dateRecolte",
             lc."quantiteDemandee"::float8 AS "quantiteDemandee",
             lc."quantiteConfirmee"::float8 AS "quantiteConfirmee",
+<<<<<<< HEAD
             r."quantiteRestante"::float8 AS "quantiteRestanteRecolte",
             (CASE
                WHEN co."statutCommande" = 'EN_ATTENTE' THEN lc."quantiteDemandee" * p."prixUnitaire"
@@ -85,6 +104,10 @@ export async function lignesCommande(idCommande: string): Promise<unknown[]> {
              END)::float8 AS "montantLigne"
        FROM ligne_commande lc
        JOIN commande co ON co."idCommande" = lc."idCommande"
+=======
+            r."quantiteRestante"::float8 AS "quantiteRestanteRecolte"
+       FROM ligne_commande lc
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
        JOIN recolte r ON r."idRecolte" = lc."idRecolte"
        JOIN produit p ON p."idProduit" = r."idProduit"
        JOIN membre m ON m."idMembre" = r."idMembre"
@@ -95,7 +118,12 @@ export async function lignesCommande(idCommande: string): Promise<unknown[]> {
   return r.rows;
 }
 
+<<<<<<< HEAD
 // En-tête et lignes dans une seule transaction. Le stock n'est pas modifié ici.
+=======
+// Crée l'en-tête et les lignes dans une seule transaction.
+// Les quantités ne sont pas déduites ici : la commande reste "En attente".
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 export async function creerCommandeAvecLignes(params: {
   idCoop: string;
   idUser: string;
@@ -131,6 +159,10 @@ export async function creerCommandeAvecLignes(params: {
   }
 }
 
+<<<<<<< HEAD
+=======
+// Quantité disponible sur chaque récolte demandée, avec la coopérative et le produit
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 export async function quantitesRestantes(
   idRecoltes: string[]
 ): Promise<Map<string, { restante: number; idCoop: string; nomProduit: string }>> {
@@ -157,7 +189,28 @@ export async function quantitesRestantes(
   return carte;
 }
 
+<<<<<<< HEAD
 // ACCEPTATION : une seule transaction avec verrous
+=======
+// Utilisateur lu dans la base (le rôle et la coopérative ne viennent pas du client)
+export async function trouverUtilisateur(
+  idUser: string
+): Promise<{ idUser: string; role: string; idCoop: string | null; actifUtilisateur: string } | null> {
+  const r = await pool.query(
+    `SELECT "idUser", role, "idCoop", "actifUtilisateur" FROM utilisateur WHERE "idUser" = $1`,
+    [idUser]
+  );
+  return r.rows[0] ?? null;
+}
+
+// ACCEPTATION : une seule transaction.
+// 1. verrouille la commande et vérifie qu'elle est "En attente" et à la bonne coopérative
+// 2. vérifie chaque quantité confirmée, et verrouille les récoltes
+// 3. déduit les quantités des récoltes et enregistre la quantité confirmée
+// 4. ajoute les quantités au stock SOAM (une ligne par produit)
+// 5. passe la commande à "En cours de livraison"
+// Si une étape échoue, tout est annulé.
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 export async function accepterCommandeTx(
   idCommande: string,
   idCoop: string,
@@ -173,6 +226,10 @@ export async function accepterCommandeTx(
   try {
     await client.query('BEGIN');
 
+<<<<<<< HEAD
+=======
+    // verrou sur la commande : deux traitements simultanés ne passent pas tous les deux
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     const cmd = await client.query(
       `SELECT "statutCommande" FROM commande
         WHERE "idCommande" = $1 AND "idCoop" = $2
@@ -204,6 +261,10 @@ export async function accepterCommandeTx(
       return annuler({ ok: false, status: 400, message: 'Toutes les lignes doivent être confirmées' });
     }
 
+<<<<<<< HEAD
+=======
+    // Contrôle complet avant toute écriture
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     const parProduit = new Map<string, number>();
     for (const l of existantes.rows) {
       const q = parLigne.get(l.idLigneCommande);
@@ -211,7 +272,15 @@ export async function accepterCommandeTx(
         return annuler({ ok: false, status: 400, message: 'Toutes les lignes doivent être confirmées' });
       }
       if (!(q > 0) || q > l.quantiteDemandee) {
+<<<<<<< HEAD
         return annuler({ ok: false, status: 400, message: `Quantité confirmée invalide pour ${l.nomProduit}` });
+=======
+        return annuler({
+          ok: false,
+          status: 400,
+          message: `Quantité confirmée invalide pour ${l.nomProduit}`,
+        });
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
       }
       if (q > l.quantiteRestante) {
         return annuler({
@@ -222,10 +291,15 @@ export async function accepterCommandeTx(
       }
     }
 
+<<<<<<< HEAD
+=======
+    // Écritures, une fois tous les contrôles passés
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     for (const l of existantes.rows) {
       const q = parLigne.get(l.idLigneCommande) as number;
 
       await client.query(
+<<<<<<< HEAD
         `UPDATE ligne_commande SET "quantiteConfirmee" = $2::numeric WHERE "idLigneCommande" = $1`,
         [l.idLigneCommande, q]
       );
@@ -236,6 +310,23 @@ export async function accepterCommandeTx(
       parProduit.set(l.idProduit, (parProduit.get(l.idProduit) ?? 0) + q);
     }
 
+=======
+        `UPDATE ligne_commande SET "quantiteConfirmee" = $2::numeric
+          WHERE "idLigneCommande" = $1`,
+        [l.idLigneCommande, q]
+      );
+
+      await client.query(
+        `UPDATE recolte SET "quantiteRestante" = "quantiteRestante" - $2::numeric
+          WHERE "idRecolte" = $1`,
+        [l.idRecolte, q]
+      );
+
+      parProduit.set(l.idProduit, (parProduit.get(l.idProduit) ?? 0) + q);
+    }
+
+    // Stock central SOAM : une seule ligne par produit (index partiel uq_stock_soam)
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     for (const [idProduit, quantite] of parProduit) {
       await client.query(
         `INSERT INTO stock ("idProduit", "typeStock", "quantiteStock")
@@ -276,6 +367,10 @@ export async function refuserCommandeTx(idCommande: string, idCoop: string): Pro
         FOR UPDATE`,
       [idCommande, idCoop]
     );
+<<<<<<< HEAD
+=======
+
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     if (!cmd.rows[0]) {
       await client.query('ROLLBACK');
       return { ok: false, status: 404, message: 'Commande introuvable' };
@@ -298,6 +393,7 @@ export async function refuserCommandeTx(idCommande: string, idCoop: string): Pro
   } finally {
     client.release();
   }
+<<<<<<< HEAD
 }
 
 export async function modifierStatutPaiement(idCommande: string, statut: string): Promise<void> {
@@ -305,4 +401,6 @@ export async function modifierStatutPaiement(idCommande: string, statut: string)
     `UPDATE commande SET "statutPaiement" = $2 WHERE "idCommande" = $1`,
     [idCommande, statut]
   );
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 }

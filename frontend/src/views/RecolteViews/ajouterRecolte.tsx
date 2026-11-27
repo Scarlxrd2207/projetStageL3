@@ -10,13 +10,22 @@ import type { Cooperative } from '../../services/cooperative.service';
 import { getProduits } from '../../services/produit.service';
 import type { Produit } from '../../services/produit.service';
 import { dateAujourdhui } from '../../utils/dates';
+<<<<<<< HEAD
 import { lireSession } from '../../utils/session';
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 import '../../styles/dashboard.css';
 
 export default function AjouterRecolte() {
   const navigate = useNavigate();
+<<<<<<< HEAD
   const session = lireSession();
   const estPresident = session?.role === 'PRESIDENT';
+=======
+  const utilisateur: { role: string; idCoop: string | null } | null =
+    JSON.parse(localStorage.getItem('utilisateur') ?? 'null');
+  const estPresident = utilisateur?.role === 'PRESIDENT';
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 
   const [cooperatives, setCooperatives] = useState<Cooperative[]>([]);
   const [produits, setProduits] = useState<Produit[]>([]);
@@ -30,7 +39,11 @@ export default function AjouterRecolte() {
 
   // Président : sa coopérative est imposée. Responsable : il la choisit.
   const initial: ValeursRecolte = {
+<<<<<<< HEAD
     idCoop: estPresident ? (session?.idCoop ?? '') : '',
+=======
+    idCoop: estPresident ? (utilisateur?.idCoop ?? '') : '',
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     idMembre: '',
     idProduit: '',
     dateRecolte: dateAujourdhui(),

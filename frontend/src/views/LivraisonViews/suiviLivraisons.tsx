@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useCallback, useEffect, useState } from 'react';
 import Sidebar from '../../components/Sidebar';
 import BarreRecherche from '../../components/BarreRecherche';
@@ -9,6 +10,16 @@ import { contient, dansPeriode } from '../../utils/filtres';
 import '../../styles/dashboard.css';
 
 // "2026-11-18" devient "18/11/2026"
+=======
+import { useEffect, useState } from 'react';
+import Sidebar from '../../components/Sidebar';
+import { getLivraisons, confirmerLivraison } from '../../services/livraison.service';
+import type { Livraison } from '../../services/livraison.service';
+import { lireSession } from '../../utils/session';
+import '../../styles/dashboard.css';
+
+// Les dates arrivent en "AAAA-MM-JJ..." : on garde la partie date, affichée "JJ/MM/AAAA"
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 function formaterDate(iso: string | null): string {
   if (!iso) return '—';
   const [annee, mois, jour] = iso.slice(0, 10).split('-');
@@ -25,6 +36,7 @@ export default function SuiviLivraisons() {
 
   const [livraisons, setLivraisons] = useState<Livraison[]>([]);
   const [filtre, setFiltre] = useState('');
+<<<<<<< HEAD
   const [texte, setTexte] = useState('');
   const [du, setDu] = useState('');
   const [au, setAu] = useState('');
@@ -36,10 +48,22 @@ export default function SuiviLivraisons() {
     const idUser = lireSession()?.idUser ?? '';
     setChargement(true);
     getLivraisons(idUser, filtre || undefined)
+=======
+  const [erreur, setErreur] = useState('');
+  const [message, setMessage] = useState('');
+  const [chargement, setChargement] = useState(true);
+  const [version, setVersion] = useState(0);
+
+  useEffect(() => {
+    if (!session) return;
+    setChargement(true);
+    getLivraisons(session.idUser, filtre || undefined)
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
       .then((liste) => {
         setLivraisons(liste);
         setErreur('');
       })
+<<<<<<< HEAD
       .catch((err: any) => setErreur(err?.response?.data?.message ?? 'Impossible de charger les livraisons'))
       .finally(() => setChargement(false));
   }, [filtre]);
@@ -49,6 +73,11 @@ export default function SuiviLivraisons() {
   }, [charger]);
 
   useMaj(charger);
+=======
+      .catch((err) => setErreur(err?.response?.data?.message ?? 'Impossible de charger les livraisons'))
+      .finally(() => setChargement(false));
+  }, [filtre, version]);
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 
   useEffect(() => {
     if (!message) return;
@@ -56,6 +85,7 @@ export default function SuiviLivraisons() {
     return () => clearTimeout(t);
   }, [message]);
 
+<<<<<<< HEAD
   const affichees = livraisons.filter(
     (l) =>
       contient(texte, [l.idCommande, l.nomCoop, l.statutCommande === 'LIVREE' ? 'livrée' : 'en cours']) &&
@@ -70,13 +100,27 @@ export default function SuiviLivraisons() {
       await confirmerLivraison(l.idCommande, idUser);
       setMessage('Réception confirmée');
       charger();
+=======
+  async function confirmer(l: Livraison) {
+    if (!session) return;
+    if (!window.confirm(`Confirmer la réception de la commande de ${l.nomCoop} ?`)) return;
+    setErreur('');
+    try {
+      await confirmerLivraison(l.idCommande, session.idUser);
+      setMessage('Réception confirmée');
+      setVersion((v) => v + 1);
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     } catch (err: any) {
       setErreur(err?.response?.data?.message ?? 'Confirmation impossible');
     }
   }
 
   const select = {
+<<<<<<< HEAD
     padding: 10,
+=======
+    padding: 8,
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     minWidth: 220,
     background: 'var(--fond-carte)',
     color: 'var(--texte)',
@@ -102,6 +146,7 @@ export default function SuiviLivraisons() {
           <h1>{estResponsable ? 'Livraisons' : 'Livraisons de ma coopérative'}</h1>
         </header>
 
+<<<<<<< HEAD
         <section className="card" style={{ display: 'flex', gap: 12, alignItems: 'flex-end', flexWrap: 'wrap' }}>
           <div>
             <div className="kpi-label">Statut</div>
@@ -123,15 +168,32 @@ export default function SuiviLivraisons() {
               onAu={setAu}
             />
           </div>
+=======
+        <section className="card" style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <span className="kpi-label">Statut</span>
+          <select style={select} value={filtre} onChange={(e) => setFiltre(e.target.value)}>
+            <option value="">Toutes</option>
+            <option value="EN_COURS_LIVRAISON">En cours de livraison</option>
+            <option value="LIVREE">Livrées</option>
+          </select>
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
         </section>
 
         <section className="card">
           {erreur && <p style={{ color: '#ef4444' }}>{erreur}</p>}
           {message && <p style={{ color: 'var(--accent)' }}>{message}</p>}
           {chargement && <p>Chargement...</p>}
+<<<<<<< HEAD
           {!chargement && !erreur && affichees.length === 0 && <p>Aucune livraison trouvée.</p>}
 
           {affichees.length > 0 && (
+=======
+          {!chargement && !erreur && livraisons.length === 0 && (
+            <p>Aucune livraison en cours ou terminée.</p>
+          )}
+
+          {!chargement && livraisons.length > 0 && (
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
             <table className="table">
               <thead>
                 <tr>
@@ -146,7 +208,11 @@ export default function SuiviLivraisons() {
                 </tr>
               </thead>
               <tbody>
+<<<<<<< HEAD
                 {affichees.map((l) => (
+=======
+                {livraisons.map((l) => (
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
                   <tr key={l.idCommande}>
                     <td>{formaterDate(l.dateAcceptation)}</td>
                     {estResponsable && <td>{l.nomCoop}</td>}

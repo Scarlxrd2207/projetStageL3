@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
@@ -15,23 +16,49 @@ function formaterDate(iso: string): string {
   return `${jour}/${mois}/${annee}`;
 }
 
+=======
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Sidebar from '../../components/Sidebar';
+import ChampRecherche from '../../components/ChampRecherche';
+import {
+  getCooperativesFiltrees,
+  supprimerCooperative,
+} from '../../services/cooperative.service';
+import type { Cooperative, Filtres } from '../../services/cooperative.service';
+import { NOMS_DISTRICTS, TOUTES_LES_COMMUNES, communesDe } from '../../utils/localites';
+import '../../styles/dashboard.css';
+
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 export default function ListeCoop() {
   const [toutes, setToutes] = useState<Cooperative[]>([]);
   const [cooperatives, setCooperatives] = useState<Cooperative[]>([]);
   const [filtres, setFiltres] = useState<Filtres>({});
+<<<<<<< HEAD
   const [texte, setTexte] = useState('');
   const [du, setDu] = useState('');
   const [au, setAu] = useState('');
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   const [version, setVersion] = useState(0);
   const [erreur, setErreur] = useState('');
   const [chargement, setChargement] = useState(true);
 
+<<<<<<< HEAD
   // Liste complète : sert à proposer les fokontany existants
+=======
+  // Liste complète, sert uniquement à proposer les fokontany existants
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   useEffect(() => {
     getCooperativesFiltrees({}).then(setToutes).catch(() => {});
   }, [version]);
 
+<<<<<<< HEAD
   const charger = useCallback(() => {
+=======
+  // Liste filtrée, rechargée à chaque changement de filtre
+  useEffect(() => {
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     setChargement(true);
     getCooperativesFiltrees(filtres)
       .then((liste) => {
@@ -40,17 +67,22 @@ export default function ListeCoop() {
       })
       .catch(() => setErreur('Impossible de charger les coopératives'))
       .finally(() => setChargement(false));
+<<<<<<< HEAD
   }, [filtres]);
 
   useEffect(() => {
     charger();
   }, [charger, version]);
+=======
+  }, [filtres, version]);
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 
   const fokotanys = useMemo(
     () => [...new Set(toutes.map((c) => c.fokotanyCoop))].sort(),
     [toutes]
   );
 
+<<<<<<< HEAD
   const affichees = cooperatives.filter(
     (c) =>
       contient(texte, [c.idCoop, c.nomCoop, c.districtCoop, c.communeCoop, c.fokotanyCoop]) &&
@@ -60,6 +92,12 @@ export default function ListeCoop() {
   function changer(champ: keyof Filtres, valeur: string) {
     setFiltres((f) => {
       const nouveau: Filtres = { ...f, [champ]: valeur || undefined };
+=======
+  function changer(champ: keyof Filtres, valeur: string) {
+    setFiltres((f) => {
+      const nouveau: Filtres = { ...f, [champ]: valeur || undefined };
+      // Changer de district réinitialise la commune
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
       if (champ === 'district') nouveau.commune = undefined;
       return nouveau;
     });
@@ -108,6 +146,10 @@ export default function ListeCoop() {
               style={{ minWidth: 200, marginBottom: 0 }}
             />
           </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
           <div>
             <div className="kpi-label">Commune</div>
             <ChampRecherche
@@ -118,6 +160,10 @@ export default function ListeCoop() {
               style={{ minWidth: 200, marginBottom: 0 }}
             />
           </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
           <div>
             <div className="kpi-label">Fokontany</div>
             <ChampRecherche
@@ -128,16 +174,22 @@ export default function ListeCoop() {
               style={{ minWidth: 200, marginBottom: 0 }}
             />
           </div>
+<<<<<<< HEAD
           <button
             type="button"
             onClick={() => setFiltres({})}
             style={{ ...boutonLien, padding: '8px 14px' }}
           >
+=======
+
+          <button onClick={() => setFiltres({})} style={{ ...boutonLien, padding: '8px 14px' }}>
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
             Réinitialiser
           </button>
         </section>
 
         <section className="card">
+<<<<<<< HEAD
           <BarreRecherche
             texte={texte}
             onTexte={setTexte}
@@ -158,6 +210,15 @@ export default function ListeCoop() {
           )}
 
           {affichees.length > 0 && (
+=======
+          {chargement && <p>Chargement...</p>}
+          {erreur && <p style={{ color: '#ef4444' }}>{erreur}</p>}
+          {!chargement && !erreur && cooperatives.length === 0 && (
+            <p>Aucune coopérative ne correspond à ces filtres.</p>
+          )}
+
+          {cooperatives.length > 0 && (
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
             <table className="table">
               <thead>
                 <tr>
@@ -173,13 +234,18 @@ export default function ListeCoop() {
                 </tr>
               </thead>
               <tbody>
+<<<<<<< HEAD
                 {affichees.map((c) => (
+=======
+                {cooperatives.map((c) => (
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
                   <tr key={c.idCoop}>
                     <td>{c.idCoop}</td>
                     <td>{c.nomCoop}</td>
                     <td>{c.districtCoop}</td>
                     <td>{c.communeCoop}</td>
                     <td>{c.fokotanyCoop}</td>
+<<<<<<< HEAD
                     <td>{formaterDate(c.dateAdhesion)}</td>
                     <td>{c.nombreMembres ?? 0}</td>
                     <td>{c.inscrite === 'Oui' ? 'Inscrite' : 'Non inscrite'}</td>
@@ -187,6 +253,16 @@ export default function ListeCoop() {
                       <Link to={`/cooperatives/${c.idCoop}/president/ajouter`} style={boutonLien}>Président</Link>
                       <Link to={`/cooperatives/${c.idCoop}/modifier`} style={boutonLien}>Modifier</Link>
                       <button type="button" onClick={() => supprimer(c)} style={{ ...boutonLien, color: '#ef4444' }}>
+=======
+                    <td>{new Date(c.dateAdhesion).toLocaleDateString('fr-FR')}</td>
+                    <td>{c.nombreMembres ?? 0}</td>
+                    <td>{c.inscrite === 'Oui' ? 'Inscrite' : 'Non inscrite'}</td>
+                    <td style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                      <Link to={`/cooperatives/${c.idCoop}/membres`} style={boutonLien}>Membres</Link>
+                      <Link to={`/cooperatives/${c.idCoop}/president/ajouter`} style={boutonLien}>Président</Link>
+                      <Link to={`/cooperatives/${c.idCoop}/modifier`} style={boutonLien}>Modifier</Link>
+                      <button onClick={() => supprimer(c)} style={{ ...boutonLien, color: '#ef4444' }}>
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
                         Supprimer
                       </button>
                     </td>

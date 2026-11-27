@@ -9,12 +9,19 @@ export type DonneesMembre = {
   idCoop: string;
 };
 
+<<<<<<< HEAD
 // Colonnes communes, avec le nom de la coopérative (jointure)
 const COLONNES = `
   m."idMembre", m."nomMembre", m."prenomMembre", m."telephoneMembre",
   m."districtMembre", m."communeMembre", m."fokotanyMembre",
   m."actifMembre", m."idCoop",
   (SELECT c."nomCoop" FROM cooperative c WHERE c."idCoop" = m."idCoop") AS "nomCoop"
+=======
+const COLONNES = `
+  m."idMembre", m."nomMembre", m."prenomMembre", m."telephoneMembre",
+  m."districtMembre", m."communeMembre", m."fokotanyMembre",
+  m."actifMembre", m."idCoop"
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 `;
 
 export async function listerMembres(idCoop?: string): Promise<Membre[]> {
@@ -53,8 +60,13 @@ export async function existeDoublonMembre(
   return (r.rowCount ?? 0) > 0;
 }
 
+<<<<<<< HEAD
 // L'identifiant (M-0001...) est attribué par la base.
 // District et commune sont copiés depuis la coopérative dans la même requête.
+=======
+// L'identifiant (M-0001...) est attribué par la base (valeur par défaut de la table).
+// district et commune sont copiés depuis la coopérative dans la même requête.
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 export async function creerMembre(d: DonneesMembre): Promise<Membre | null> {
   const r = await pool.query(
     `INSERT INTO membre ("nomMembre", "prenomMembre", "telephoneMembre",

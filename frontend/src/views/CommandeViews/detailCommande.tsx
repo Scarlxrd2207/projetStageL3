@@ -1,17 +1,29 @@
+<<<<<<< HEAD
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import BoutonFacture from '../../components/BoutonFacture';
+=======
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import Sidebar from '../../components/Sidebar';
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 import {
   getDetailCommande,
   accepterCommande,
   refuserCommande,
+<<<<<<< HEAD
   changerStatutPaiement,
 } from '../../services/commande.service';
 import type { DetailCommande } from '../../services/commande.service';
 import { lireSession } from '../../utils/session';
 import { useMaj } from '../../hooks/useTempsReel';
 import { formaterAr } from '../../utils/format';
+=======
+} from '../../services/commande.service';
+import type { DetailCommande } from '../../services/commande.service';
+import { lireSession } from '../../utils/session';
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 import '../../styles/dashboard.css';
 
 const LIBELLES = {
@@ -21,9 +33,16 @@ const LIBELLES = {
   REFUSEE: 'Refusée',
 } as const;
 
+<<<<<<< HEAD
 function formaterDate(iso: string | null): string {
   if (!iso) return '—';
   const [annee, mois, jour] = iso.slice(0, 10).split('-');
+=======
+// "2026-11-18" devient "18/11/2026"
+function formaterDate(iso: string | null): string {
+  if (!iso) return '—';
+  const [annee, mois, jour] = iso.split('-');
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   return `${jour}/${mois}/${annee}`;
 }
 
@@ -36,6 +55,7 @@ export default function DetailCommandePage() {
   const navigate = useNavigate();
   const session = lireSession();
   const estPresident = session?.role === 'PRESIDENT';
+<<<<<<< HEAD
   const estResponsable = session?.role === 'RESPONSABLE';
 
   const [detail, setDetail] = useState<DetailCommande | null>(null);
@@ -46,11 +66,24 @@ export default function DetailCommandePage() {
   const [envoi, setEnvoi] = useState(false);
 
   const charger = useCallback(() => {
+=======
+
+  const [detail, setDetail] = useState<DetailCommande | null>(null);
+  const [saisie, setSaisie] = useState<Record<string, string>>({});
+  const [erreur, setErreur] = useState('');
+  const [envoi, setEnvoi] = useState(false);
+
+  useEffect(() => {
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     if (!id) return;
     getDetailCommande(id)
       .then((d) => {
         setDetail(d);
+<<<<<<< HEAD
         setPaiement(d.commande.statutPaiement);
+=======
+        // quantités proposées par défaut : la quantité demandée
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
         setSaisie(
           Object.fromEntries(d.lignes.map((l) => [l.idLigneCommande, String(l.quantiteDemandee)]))
         );
@@ -58,6 +91,7 @@ export default function DetailCommandePage() {
       .catch(() => setErreur('Commande introuvable'));
   }, [id]);
 
+<<<<<<< HEAD
   useEffect(() => {
     charger();
   }, [charger]);
@@ -91,6 +125,15 @@ export default function DetailCommandePage() {
         ? 'Commande refusée : montant nul'
         : 'Montant confirmé';
 
+=======
+  const peutTraiter = estPresident && detail?.commande.statutCommande === 'EN_ATTENTE';
+
+  function lireQuantite(idLigne: string): number {
+    return Number((saisie[idLigne] ?? '').replace(',', '.'));
+  }
+
+  // Contrôles faits avant envoi ; renvoie un message, ou null si tout est correct
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   function verifierQuantites(): string | null {
     if (!detail) return 'Commande introuvable';
     for (const l of detail.lignes) {
@@ -106,11 +149,19 @@ export default function DetailCommandePage() {
 
   async function accepter() {
     if (!detail || !session) return;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     const probleme = verifierQuantites();
     if (probleme) {
       setErreur(probleme);
       return;
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     setErreur('');
     setEnvoi(true);
     try {
@@ -132,6 +183,10 @@ export default function DetailCommandePage() {
   async function refuser() {
     if (!detail || !session) return;
     if (!window.confirm('Refuser cette commande ? Aucun stock ne sera modifié.')) return;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     setErreur('');
     setEnvoi(true);
     try {
@@ -143,6 +198,7 @@ export default function DetailCommandePage() {
     }
   }
 
+<<<<<<< HEAD
   async function enregistrerPaiement() {
     if (!detail || !session) return;
     setErreur('');
@@ -159,6 +215,8 @@ export default function DetailCommandePage() {
     }
   }
 
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   const boutonLien = {
     background: 'none',
     border: '1px solid var(--bordure)',
@@ -168,7 +226,15 @@ export default function DetailCommandePage() {
     cursor: 'pointer',
   };
 
+<<<<<<< HEAD
   const champ = { width: 120, padding: 6, boxSizing: 'border-box' as const };
+=======
+  const champ = {
+    width: 120,
+    padding: 6,
+    boxSizing: 'border-box' as const,
+  };
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 
   return (
     <div className="dash">
@@ -182,7 +248,13 @@ export default function DetailCommandePage() {
         </header>
 
         {erreur && !detail && (
+<<<<<<< HEAD
           <section className="card"><p style={{ color: '#ef4444' }}>{erreur}</p></section>
+=======
+          <section className="card">
+            <p style={{ color: '#ef4444' }}>{erreur}</p>
+          </section>
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
         )}
 
         {detail && (
@@ -198,6 +270,7 @@ export default function DetailCommandePage() {
                 <strong>Acceptée le :</strong> {formaterDate(detail.commande.dateAcceptation)} ·{' '}
                 <strong>Livrée le :</strong> {formaterDate(detail.commande.dateLivraison)}
               </p>
+<<<<<<< HEAD
               <p style={{ fontSize: 18 }}>
                 <strong>Montant total :</strong> {formaterAr(montantAffiche)}
                 <span style={{ fontSize: 13, color: 'var(--texte-doux)', marginLeft: 10 }}>{libelleMontant}</span>
@@ -227,6 +300,10 @@ export default function DetailCommandePage() {
               </section>
             )}
 
+=======
+            </section>
+
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
             <section className="card">
               <h3>Lignes de la commande</h3>
               <table className="table">
@@ -239,8 +316,11 @@ export default function DetailCommandePage() {
                     <th>Demandée</th>
                     <th>Disponible</th>
                     <th>Confirmée</th>
+<<<<<<< HEAD
                     <th>Prix (Ar/kg)</th>
                     <th>Montant</th>
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
                   </tr>
                 </thead>
                 <tbody>
@@ -268,6 +348,7 @@ export default function DetailCommandePage() {
                           formaterKg(l.quantiteConfirmee)
                         )}
                       </td>
+<<<<<<< HEAD
                       <td>{formaterAr(l.prixUnitaire)}</td>
                       <td><strong>{formaterAr(montantLigne(l))}</strong></td>
                     </tr>
@@ -279,6 +360,11 @@ export default function DetailCommandePage() {
                     <td style={{ fontWeight: 700 }}>{formaterAr(montantAffiche)}</td>
                   </tr>
                 </tfoot>
+=======
+                    </tr>
+                  ))}
+                </tbody>
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
               </table>
 
               {erreur && <p style={{ color: '#ef4444', marginTop: 12 }}>{erreur}</p>}
@@ -288,7 +374,16 @@ export default function DetailCommandePage() {
                   <button type="button" className="btn-primary" disabled={envoi} onClick={accepter}>
                     {envoi ? 'Traitement...' : 'Accepter la commande'}
                   </button>
+<<<<<<< HEAD
                   <button type="button" disabled={envoi} onClick={refuser} style={{ ...boutonLien, color: '#ef4444' }}>
+=======
+                  <button
+                    type="button"
+                    disabled={envoi}
+                    onClick={refuser}
+                    style={{ ...boutonLien, color: '#ef4444' }}
+                  >
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
                     Refuser
                   </button>
                 </div>

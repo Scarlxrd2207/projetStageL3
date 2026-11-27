@@ -1,5 +1,8 @@
 import { api } from './api';
+<<<<<<< HEAD
 import { lireSession } from '../utils/session';
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 
 export type ConversationListe = {
   idConversation: string;
@@ -9,8 +12,11 @@ export type ConversationListe = {
   dernierMessage: string | null;
 };
 
+<<<<<<< HEAD
 export type FichierMessage = { nom: string; url: string };
 
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 export type MessageAffiche = {
   idMessage: string;
   contenuMessage: string;
@@ -18,7 +24,10 @@ export type MessageAffiche = {
   luMessage: 'Oui' | 'Non';
   expediteur: string;
   estMoi: boolean;
+<<<<<<< HEAD
   fichier: FichierMessage | null;
+=======
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 };
 
 export type DetailConversation = {
@@ -27,6 +36,7 @@ export type DetailConversation = {
   messages: MessageAffiche[];
 };
 
+<<<<<<< HEAD
 function idUser(): string {
   return lireSession()?.idUser ?? '';
 }
@@ -85,4 +95,31 @@ export async function telechargerFichier(url: string, nom: string): Promise<void
   lien.click();
   lien.remove();
   URL.revokeObjectURL(adresse);
+=======
+export async function getConversations(idUser: string): Promise<ConversationListe[]> {
+  const { data } = await api.get<ConversationListe[]>('/conversations', { params: { idUser } });
+  return data;
+}
+
+export async function ouvrirConversation(idUser: string, idCoop?: string): Promise<{ idConversation: string }> {
+  const { data } = await api.post('/conversations/ouvrir', { idUser, idCoop });
+  return data;
+}
+
+export async function getMessages(idConversation: string, idUser: string): Promise<DetailConversation> {
+  const { data } = await api.get<DetailConversation>(
+    `/conversations/${idConversation}/messages`,
+    { params: { idUser } }
+  );
+  return data;
+}
+
+export async function envoyerMessage(
+  idConversation: string,
+  idUser: string,
+  contenu: string
+): Promise<{ idMessage: string }> {
+  const { data } = await api.post(`/conversations/${idConversation}/messages`, { idUser, contenu });
+  return data;
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 }

@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { trouverCooperative } from '../repositories/cooperative.repository';
 import {
   trouverUtilisateurSession,
+<<<<<<< HEAD
   trouverCompte,
   trouverPresident,
   listerPresidents,
@@ -14,11 +15,18 @@ import {
   type PresidentLigne,
 } from '../repositories/utilisateur.repository';
 import { exigerResponsable } from '../utils/acces';
+=======
+  emailExiste,
+  presidentDeCoop,
+  creerPresident,
+} from '../repositories/utilisateur.repository';
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 
 export type Resultat<T = unknown> =
   | { ok: true; status: number; data: T }
   | { ok: false; status: number; message: string };
 
+<<<<<<< HEAD
 export type Identite = {
   nom: string;
   prenom: string;
@@ -76,6 +84,16 @@ export async function creerComptePresident(
   idUserDemandeur: string,
   d: Record<string, unknown>
 ): Promise<Resultat<{ idUser: string; email: string; idCoop: string }>> {
+=======
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Crée le compte d'un président. Seul un responsable SOAM actif peut le faire.
+export async function creerComptePresident(
+  idUserDemandeur: string,
+  d: { email: string; motDePasse: string; idCoop: string }
+): Promise<Resultat<{ idUser: string; email: string; idCoop: string }>> {
+  // 1. Le demandeur est relu dans la base
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   if (!idUserDemandeur) {
     return { ok: false, status: 401, message: 'Utilisateur non identifié, reconnectez-vous' };
   }
@@ -87,6 +105,7 @@ export async function creerComptePresident(
     return { ok: false, status: 403, message: 'Seul le responsable SOAM peut créer un compte président' };
   }
 
+<<<<<<< HEAD
   const email = texteOuNull(d.email);
   const motDePasse = typeof d.motDePasse === 'string' ? d.motDePasse : '';
   const idCoop = texteOuNull(d.idCoop);
@@ -100,17 +119,38 @@ export async function creerComptePresident(
   if (!v.identite) return { ok: false, status: 400, message: v.erreur ?? 'Données invalides' };
 
   const coop = await trouverCooperative(idCoop);
+=======
+  // 2. Contrôle des champs
+  const email = d.email.trim();
+  if (!email || !d.motDePasse || !d.idCoop) {
+    return { ok: false, status: 400, message: 'Champs incomplets' };
+  }
+  if (!EMAIL_RE.test(email)) {
+    return { ok: false, status: 400, message: 'Adresse e-mail invalide' };
+  }
+  if (d.motDePasse.length < 6) {
+    return { ok: false, status: 400, message: 'Le mot de passe doit contenir au moins 6 caractères' };
+  }
+
+  // 3. Règles métier : coopérative inscrite, un seul président, e-mail libre
+  const coop = await trouverCooperative(d.idCoop);
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   if (!coop) return { ok: false, status: 404, message: 'Coopérative introuvable' };
   if (coop.inscrite !== 'Oui') {
     return { ok: false, status: 400, message: "Cette coopérative n'est pas inscrite" };
   }
+<<<<<<< HEAD
   if (await presidentDeCoop(idCoop)) {
+=======
+  if (await presidentDeCoop(d.idCoop)) {
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
     return { ok: false, status: 409, message: 'Cette coopérative a déjà un président' };
   }
   if (await emailExiste(email)) {
     return { ok: false, status: 409, message: 'Adresse e-mail déjà utilisée' };
   }
 
+<<<<<<< HEAD
   try {
     const u = await creerPresident({
       email,
@@ -265,4 +305,24 @@ export async function modifierPresident(
   }
 
   return { ok: true, status: 200, data: (await trouverPresident(idPresident)) as PresidentLigne };
+=======
+  // 4. Le mot de passe n'est jamais stocké en clair
+  const motDePasseHache = await bcrypt.hash(d.motDePasse, 10);
+
+  // 5. Création ; la base peut encore refuser si deux demandes arrivent en même temps
+  try {
+    const u = await creerPresident({ email, motDePasseHache, idCoop: d.idCoop });
+    return { ok: true, status: 201, data: u };
+  } catch (err: any) {
+    // 23505 : contrainte d'unicité violée
+    if (err.code === '23505') {
+      return {
+        ok: false,
+        status: 409,
+        message: 'Cette coopérative a déjà un président ou e-mail déjà utilisé',
+      };
+    }
+    throw err;
+  }
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 }

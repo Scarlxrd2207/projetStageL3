@@ -3,12 +3,22 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import { getDetailStock } from '../../services/stock.service';
 import type { DetailStock } from '../../services/stock.service';
+<<<<<<< HEAD
 import { lireSession } from '../../utils/session';
 import '../../styles/dashboard.css';
 
 // "2026-11-18" devient "18/11/2026"
 function formaterDate(iso: string): string {
   const [annee, mois, jour] = iso.slice(0, 10).split('-');
+=======
+import '../../styles/dashboard.css';
+
+type Utilisateur = { role: string; idCoop: string | null };
+
+// "2026-11-18" devient "18/11/2026"
+function formaterDate(iso: string): string {
+  const [annee, mois, jour] = iso.split('-');
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
   return `${jour}/${mois}/${annee}`;
 }
 
@@ -19,6 +29,7 @@ function formaterKg(n: number): string {
 export default function DetailStockPage() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
+<<<<<<< HEAD
   const session = lireSession();
   const estPresident = session?.role === 'PRESIDENT';
 
@@ -27,6 +38,16 @@ export default function DetailStockPage() {
 
   // Un président ne consulte que le stock de sa propre coopérative
   const accesAutorise = !estPresident || session?.idCoop === idCoop;
+=======
+  const idCoop = params.get('idCoop') ?? '';
+  const idProduit = params.get('idProduit') ?? '';
+
+  const utilisateur: Utilisateur | null = JSON.parse(localStorage.getItem('utilisateur') ?? 'null');
+  const estPresident = utilisateur?.role === 'PRESIDENT';
+
+  // Un président ne consulte que le stock de sa propre coopérative
+  const accesAutorise = !estPresident || utilisateur?.idCoop === idCoop;
+>>>>>>> 78ccc1e1f40b0ac5b57023caa90716bb855aac28
 
   const [detail, setDetail] = useState<DetailStock | null>(null);
   const [erreur, setErreur] = useState('');
